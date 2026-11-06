@@ -1,43 +1,9 @@
-# Python bytecode and caches
 __pycache__/
-*.py[cod]
-*$py.class
-.pytest_cache/
-.coverage
-.coverage.*
-htmlcov/
-
-# Virtual environments
-.venv/
-venv/
-env/
-ENV/
-
-# Local secrets (keep the safe template)
+*.pyc
+instance/
+data/*
+!data/.gitkeep
 .env
-.env.*
-!.env.example
-
-# Local application state and private/generated data
-/instance/
-/data/*
-!/data/.gitkeep
-
-# Generated experiment outputs (documentation examples live under docs/)
-/figures/
-*.db
-*.sqlite
-*.sqlite3
-*.db-wal
-*.db-shm
-*.pt
-*.pth
-*.ckpt
-*.log
-
-# OS and editor files
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
-.idea/
+.pytest_cache/
+*.csv
+figures/
