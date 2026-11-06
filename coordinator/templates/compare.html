@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Compare{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Compare experiments</h1><p id="sub"></p></div><a class="btn" href="{{ url_for('page_experiments') }}">Back to experiments</a></div>
+<div class="grid g2">
+  <section class="panel"><div class="panel-h"><h2>Mean accuracy by round</h2></div><div class="panel-b"><div class="chart tall"><canvas id="c-mean"></canvas></div></div></section>
+  <section class="panel"><div class="panel-h"><h2>Weakest campus by round</h2></div><div class="panel-b"><div class="chart tall"><canvas id="c-min"></canvas></div></div></section>
+</div>
+<section class="panel" style="margin-top:20px"><div class="panel-b tbl-wrap" id="tbl"></div></section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/compare.js') }}"></script>{% endblock %}

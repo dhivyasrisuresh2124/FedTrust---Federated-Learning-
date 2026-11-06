@@ -1,0 +1,12 @@
+# Core
+Flask>=3.0,<4
+requests>=2.31
+numpy>=1.26
+scipy>=1.11
+scikit-learn>=1.4
+# torch: `pip install torch` (add --index-url https://download.pytorch.org/whl/cpu for a small CPU-only build)
+torch>=2.2
+# Optional
+matplotlib>=3.8        # scripts/make_figures.py
+pytest>=8              # tests
+gunicorn>=22           # production serving of the coordinator / campuses (Docker image uses it)

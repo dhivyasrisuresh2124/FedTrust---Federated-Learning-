@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Trust-weighted federated distillation</h1>
+    <p>Campuses train on private data and share only noise-protected predictions. The coordinator weighs each campus by how certain its predictions are.</p>
+  </div>
+  <div class="actions">
+    <a class="btn" href="{{ url_for('page_nodes') }}">Manage campuses</a>
+    <a class="btn primary" href="{{ url_for('page_new') }}">New experiment</a>
+  </div>
+</div>
+
+<div class="grid g-main">
+  <section class="panel" aria-labelledby="fed-h">
+    <div class="panel-h">
+      <h2 id="fed-h">Federation</h2>
+      <span class="muted" id="fed-sub">Loading…</span>
+    </div>
+    <div class="panel-b">
+      <div id="fed-wrap"></div>
+      <p class="hint" style="margin-top:8px">Line thickness shows each campus's trust in the latest experiment. Moving dots mean a run is in progress.</p>
+    </div>
+  </section>
+
+  <div class="grid" style="align-content:start">
+    <section class="panel">
+      <div class="panel-h"><h2>Latest result</h2></div>
+      <div class="panel-b" id="latest"><p class="muted">No completed experiment yet.</p></div>
+    </section>
+    <section class="panel">
+      <div class="panel-h"><h2>Quick start</h2></div>
+      <div class="panel-b">
+        <ol style="padding-left:20px;margin:0" class="muted">
+          <li>Start the campuses: <code>python scripts/start_cluster.py</code></li>
+          <li>Open <a href="{{ url_for('page_nodes') }}">Campuses</a> and check they are online.</li>
+          <li>Run the <b>proposed method</b> from <a href="{{ url_for('page_new') }}">New experiment</a>.</li>
+          <li>Compare it against baselines in <a href="{{ url_for('page_studies') }}">Studies</a>.</li>
+        </ol>
+      </div>
+    </section>
+  </div>
+</div>
+
+<section class="panel" style="margin-top:20px">
+  <div class="panel-h"><h2>Recent experiments</h2><a href="{{ url_for('page_experiments') }}">All experiments</a></div>
+  <div class="panel-b tbl-wrap" id="recent"></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/home.js') }}"></script>{% endblock %}

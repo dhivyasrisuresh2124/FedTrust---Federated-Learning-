@@ -1,0 +1,40 @@
+# One container per campus + one for the coordinator: a real multi-node deployment on one machine.
+#   docker compose up --build
+# Then open http://localhost:5000 -> Campuses is already populated (nodes register themselves).
+x-campus: &campus
+  build: .
+  environment: &env
+    FEDTRUST_TOKEN: ${FEDTRUST_TOKEN:-change-me}
+    COORDINATOR_URL: http://coordinator:5000
+  depends_on: [coordinator]
+
+services:
+  coordinator:
+    build: .
+    command: python -m coordinator.app --host 0.0.0.0 --port 5000
+    environment:
+      FEDTRUST_TOKEN: ${FEDTRUST_TOKEN:-change-me}
+      COORDINATOR_ADMIN_PASSWORD: ${COORDINATOR_ADMIN_PASSWORD:-}
+      FEDTRUST_DB: /app/instance/fedtrust.db
+    ports: ["5000:5000"]
+    volumes: ["fedtrust-db:/app/instance"]
+
+  campus-a:
+    <<: *campus
+    command: python -m campus.app --host 0.0.0.0 --port 5001 --name "Campus A"
+    environment: {<<: *env, CAMPUS_PUBLIC_URL: "http://campus-a:5001"}
+  campus-b:
+    <<: *campus
+    command: python -m campus.app --host 0.0.0.0 --port 5001 --name "Campus B"
+    environment: {<<: *env, CAMPUS_PUBLIC_URL: "http://campus-b:5001"}
+  campus-c:
+    <<: *campus
+    command: python -m campus.app --host 0.0.0.0 --port 5001 --name "Campus C"
+    environment: {<<: *env, CAMPUS_PUBLIC_URL: "http://campus-c:5001"}
+  campus-d:
+    <<: *campus
+    command: python -m campus.app --host 0.0.0.0 --port 5001 --name "Campus D"
+    environment: {<<: *env, CAMPUS_PUBLIC_URL: "http://campus-d:5001"}
+
+volumes:
+  fedtrust-db:

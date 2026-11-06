@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Studies{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Studies</h1><p>A study runs a grid of experiments, repeats each over several seeds, and reports mean ± standard deviation. Use these for the comparison tables in your report.</p></div></div>
+<div class="grid g-main">
+  <section class="panel"><div class="panel-h"><h2>Past studies</h2></div><div class="panel-b tbl-wrap" id="list"></div></section>
+  <section class="panel" style="align-self:start"><div class="panel-h"><h2>Start a study</h2></div><div class="panel-b">
+    <div class="field"><label class="f" for="kind">What do you want to compare?</label>
+      <select id="kind"><option value="modes">Methods: proposed vs baselines</option><option value="privacy">Privacy level (ε)</option><option value="noniid">Non-IID severity (α)</option></select>
+      <div class="hint" id="kind-hint"></div></div>
+    <div class="field" id="vals-box"><label class="f" for="vals" id="vals-l"></label><input type="text" id="vals"><div class="hint">Separate values with spaces. Use “off” for no DP.</div></div>
+    <div class="row"><div class="field"><label class="f" for="seeds">Repetitions (seeds)</label><input type="number" id="seeds" min="1" max="10" value="3"></div>
+      <div class="field"><label class="f" for="rounds">Rounds per run</label><input type="number" id="rounds" min="1" max="100" value="8"></div></div>
+    <div class="field"><label class="f" for="sname">Study name</label><input type="text" id="sname" placeholder="e.g. Final comparison"></div>
+    <div class="callout" id="runs" style="margin-bottom:12px"></div><div id="err"></div>
+    <button class="btn primary" id="go" style="width:100%;justify-content:center">Queue study</button>
+  </div></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/studies.js') }}"></script>{% endblock %}

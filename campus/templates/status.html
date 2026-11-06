@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ name }} · FedTrust campus node</title>
+<style>
+  :root { --bg:#f3f6f8; --ink:#14232e; --muted:#5b6b78; --line:#d5dde3; --blue:#1f5f8b; --teal:#0e8c7f; --amber:#c77d0a; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1a22; --ink:#e6edf2; --muted:#93a4b1; --line:#26394a; --blue:#6fb0dd; --teal:#47c2b4; --amber:#e3a63c; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:40px 20px 60px; }
+  h1 { font:600 30px/1.2 "Source Serif 4", Georgia, serif; margin:0 0 4px; }
+  p.sub { color:var(--muted); margin:0 0 28px; }
+  .state { display:inline-flex; align-items:center; gap:8px; font-weight:600; }
+  .dot { width:10px; height:10px; border-radius:50%; background:var(--muted); }
+  .dot.ready { background:var(--teal); } .dot.busy { background:var(--amber); animation:pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity:.35; } }
+  @media (prefers-reduced-motion: reduce) { .dot.busy { animation:none; } }
+  dl { display:grid; grid-template-columns:max-content 1fr; gap:10px 28px; border-top:1px solid var(--line); padding-top:20px; margin:24px 0; }
+  dt { color:var(--muted); } dd { margin:0; font-variant-numeric:tabular-nums; }
+  .note { border-left:3px solid var(--blue); padding:6px 14px; color:var(--muted); font-size:15px; }
+  code { background:color-mix(in srgb, var(--ink) 8%, transparent); padding:1px 5px; border-radius:3px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>{{ name }}</h1>
+  <p class="sub">Campus node of a FedTrust federation</p>
+  <div class="state"><span id="dot" class="dot"></span><span id="state">connecting…</span></div>
+  <dl>
+    <dt>Local model</dt><dd id="model">–</dd>
+    <dt>Parameters</dt><dd id="params">–</dd>
+    <dt>Private samples</dt><dd id="priv">–</dd>
+    <dt>Public anchor samples</dt><dd id="anchor">–</dd>
+    <dt>Epochs trained</dt><dd id="epochs">–</dd>
+    <dt>Prediction releases</dt><dd id="rel">–</dd>
+    <dt>Current experiment</dt><dd id="exp">–</dd>
+  </dl>
+  <p class="note">Private training data never leaves this node. Only noise-protected predictions on the shared anchor set are sent to the coordinator.
+  {% if token_hint %}This node is using the default development token; set <code>FEDTRUST_TOKEN</code> before exposing it to a network.{% endif %}</p>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+async function tick() {
+  try {
+    const r = await fetch('/status.json'); const s = await r.json();
+    $('state').textContent = s.state === 'busy' ? 'Working: ' + (s.op || '') : s.state === 'ready' ? 'Ready' : 'Waiting for the coordinator';
+    $('dot').className = 'dot ' + s.state;
+    $('model').textContent = s.model || '–';
+    $('params').textContent = s.n_params ? s.n_params.toLocaleString() : '–';
+    $('priv').textContent = s.n_private ?? '–';
+    $('anchor').textContent = s.n_anchor ?? '–';
+    $('epochs').textContent = s.epochs_done;
+    $('rel').textContent = s.releases;
+    $('exp').textContent = s.experiment_id || 'none';
+  } catch (e) { $('state').textContent = 'Unreachable'; $('dot').className = 'dot'; }
+}
+tick(); setInterval(tick, 2000);
+</script>
+</body>
+</html>
