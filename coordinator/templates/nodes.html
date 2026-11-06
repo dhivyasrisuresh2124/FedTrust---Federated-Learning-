@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Campuses{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Campuses</h1>
+    <p>Each campus is its own Flask service holding private data. The coordinator reaches it over HTTP with a shared token.</p>
+  </div>
+</div>
+<div class="grid g-main">
+  <section class="panel">
+    <div class="panel-h"><h2>Registered nodes</h2><span class="muted" id="count"></span></div>
+    <div class="panel-b" id="list"></div>
+  </section>
+  <section class="panel" style="align-self:start">
+    <div class="panel-h"><h2>Add a campus</h2></div>
+    <div class="panel-b">
+      <div class="field"><label class="f" for="n-url">Node address</label>
+        <input type="url" id="n-url" placeholder="http://10.0.0.12:5001" autocomplete="off">
+        <div class="hint">The address where the campus service is listening.</div></div>
+      <div class="field"><label class="f" for="n-name">Display name (optional)</label>
+        <input type="text" id="n-name" placeholder="Taken from the node if left empty"></div>
+      <button class="btn primary" id="n-add">Add campus</button>
+      <p class="hint" style="margin-top:16px">Campuses can also register themselves: start a node with
+        <code>--coordinator http://&lt;this-host&gt;:5000</code>.</p>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/nodes.js') }}"></script>{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Experiments{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Experiments</h1><p>Every run is stored with its full configuration and per-round metrics.</p></div>
+  <div class="actions"><button class="btn" id="cmp" disabled>Compare selected</button><a class="btn primary" href="{{ url_for('page_new') }}">New experiment</a></div>
+</div>
+<section class="panel"><div class="panel-b tbl-wrap" id="list"></div></section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/experiments.js') }}"></script>{% endblock %}

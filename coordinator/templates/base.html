@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}FedTrust{% endblock %} · FedTrust</title>
+<link rel="preload" href="{{ url_for('static', filename='fonts/source-serif-4-latin-wght-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+<script src="{{ url_for('static', filename='vendor/chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="{{ url_for('page_index') }}" aria-label="FedTrust home">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+        <g stroke="currentColor" stroke-width="1.6" fill="none" opacity=".55"><path d="M13 13 4 5M13 13l9-8M13 13 4 21M13 13l9 8"/></g>
+        <circle cx="13" cy="13" r="4.2" fill="var(--blue)"/>
+        <g fill="var(--teal)"><circle cx="4" cy="5" r="2.6"/><circle cx="22" cy="5" r="2.6"/><circle cx="4" cy="21" r="2.6"/><circle cx="22" cy="21" r="2.6"/></g>
+      </svg>
+      FedTrust
+    </a>
+    <nav class="main" aria-label="Main">
+      {% for key, label, href in [('home','Overview', url_for('page_index')), ('nodes','Campuses', url_for('page_nodes')), ('experiments','Experiments', url_for('page_experiments')), ('studies','Studies', url_for('page_studies')), ('method','Method', url_for('page_method'))] %}
+      <a href="{{ href }}" {% if page == key %}aria-current="page"{% endif %}>{{ label }}</a>
+      {% endfor %}
+    </nav>
+    <div class="runner" id="runner" role="status" aria-live="polite"><span class="dot" id="runner-dot"></span><span id="runner-text">Checking…</span></div>
+  </div>
+</header>
+<main class="page">
+{% block content %}{% endblock %}
+</main>
+{% block scripts %}{% endblock %}
+</body>
+</html>

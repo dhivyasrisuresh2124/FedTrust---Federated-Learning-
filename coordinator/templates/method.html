@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Method{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>How the method works</h1><p>What happens in each federated round, and what the privacy setting does and does not promise.</p></div></div>
+<article class="prose panel" style="padding:12px 28px 28px">
+<h2>The problem</h2>
+<p>Several campuses want a better model without pooling research data. Their data differs (non-IID), their data quality differs, and they may even use different model architectures, so averaging weights is not an option.</p>
+
+<h2>One round</h2>
+<ol>
+<li><b>Local training.</b> Each campus trains its own model on private data.</li>
+<li><b>Anchor prediction.</b> Each campus predicts on a shared public anchor set. Only these predictions can leave the campus.</li>
+<li><b>Privacy protection.</b> Gaussian noise is added to every prediction vector before it is sent.</li>
+<li><b>Trust estimation.</b> The coordinator measures how uncertain each campus's predictions are (normalised entropy <i>H</i>) and converts that into a trust share.
+<div class="eq">T<sub>k</sub> = softmax<sub>k</sub>( −mean H<sub>k</sub> / τ ), smoothed across rounds</div></li>
+<li><b>Trust-weighted teacher.</b> For every anchor sample, campuses are weighted by trust and by their own certainty on that sample.
+<div class="eq">w<sub>k</sub>(x) ∝ T<sub>k</sub> · exp(−H<sub>k</sub>(x) / τ<sub>s</sub>),  q(x) = Σ<sub>k</sub> w<sub>k</sub>(x) p<sub>k</sub>(x)</div></li>
+<li><b>Adaptive distillation.</b> Each campus learns from the teacher while still fitting its own data.
+<div class="eq">loss = CE(local batch) + λ<sub>k</sub> · T² · KL(q<sub>T</sub> ‖ p<sub>T</sub>) on anchor samples, weighted by teacher confidence</div>
+λ<sub>k</sub> is larger for campuses the federation trusts less, and the whole value shrinks when the teacher itself is uncertain.
+<div class="eq">λ<sub>k</sub> = Q · λ<sub>max</sub> · ( floor + (1 − floor)(1 − T<sub>k</sub> / max T) ),  Q = mean teacher confidence</div></li>
+<li><b>Evaluation.</b> Every campus is scored on a common held-out test set.</li>
+</ol>
+
+<h2>The baselines</h2>
+<ul>
+<li><b>Local only:</b> no sharing, same total training epochs.</li>
+<li><b>Uniform FD:</b> every campus has the same weight, fixed λ (FedMD-style).</li>
+<li><b>Trust + fixed λ:</b> isolates the effect of adaptive distillation.</li>
+</ul>
+
+<h2>What the privacy number means</h2>
+<p>Noise is calibrated with the analytic Gaussian mechanism for a chosen (ε, δ). The guarantee is <b>per released prediction vector, per round</b>: it bounds how much any single released vector can reveal about the campus model's output. Across rounds the coordinator reports the tighter of basic and advanced composition. This is output perturbation, not DP-SGD, so it is <b>not</b> a formal record-level guarantee for each training example. Treat ε as a tunable privacy–utility dial and describe it that way in your report.</p>
+
+<h2>Known limitations</h2>
+<ul>
+<li>Entropy-based trust rewards confidence. A campus that is confidently wrong would be over-trusted; the “trust vs released accuracy” correlation on each run shows how well the signal tracks quality.</li>
+<li>Noise is added in probability space, so very small ε makes every campus look uncertain and trust differences shrink.</li>
+<li>The anchor set is assumed to be public and identically available to all campuses.</li>
+</ul>
+</article>
+{% endblock %}

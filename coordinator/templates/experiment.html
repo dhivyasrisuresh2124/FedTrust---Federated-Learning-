@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Experiment{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1 id="title">Loading…</h1><p id="subtitle"></p></div>
+  <div class="actions" id="actions"></div>
+</div>
+<div id="state"></div>
+<div class="kpis" id="kpis"></div>
+<div class="grid g2">
+  <section class="panel"><div class="panel-h"><h2>Test accuracy by campus</h2></div><div class="panel-b"><div class="chart tall"><canvas id="c-acc"></canvas></div></div></section>
+  <section class="panel"><div class="panel-h"><h2>Trust assigned to each campus</h2></div><div class="panel-b"><div class="chart tall"><canvas id="c-trust"></canvas></div>
+    <p class="hint">Shares sum to 100%. Confident campuses earn more weight in the teacher.</p></div></section>
+  <section class="panel"><div class="panel-h"><h2>Teacher quality on the anchor set</h2></div><div class="panel-b"><div class="chart"><canvas id="c-teacher"></canvas></div>
+    <p class="hint">Accuracy of the aggregated teacher against hidden anchor labels (used only for scoring). Compares trust-weighted with plain averaging of the same noisy predictions.</p></div></section>
+  <section class="panel"><div class="panel-h"><h2>Distillation weight λ per campus</h2></div><div class="panel-b"><div class="chart"><canvas id="c-lambda"></canvas></div></div></section>
+  <section class="panel"><div class="panel-h"><h2>Communication per round</h2></div><div class="panel-b"><div class="chart short"><canvas id="c-comm"></canvas></div>
+    <p class="hint" id="comm-hint"></p></div></section>
+  <section class="panel"><div class="panel-h"><h2>Prediction uncertainty (entropy)</h2></div><div class="panel-b"><div class="chart short"><canvas id="c-entropy"></canvas></div>
+    <p class="hint">Mean normalised entropy of each campus's released predictions: 0 = certain, 1 = uniform.</p></div></section>
+</div>
+<section class="panel" style="margin-top:20px"><div class="panel-h"><h2>Campuses at the end of the run</h2></div><div class="panel-b tbl-wrap" id="final"></div></section>
+<section class="panel" style="margin-top:20px"><div class="panel-h"><h2>Per-class test accuracy</h2></div><div class="panel-b tbl-wrap" id="perclass"></div></section>
+<details class="panel" style="margin-top:20px"><summary class="panel-h" style="cursor:pointer"><h2>Configuration</h2></summary><div class="panel-b"><pre class="json" id="cfg"></pre></div></details>
+{% endblock %}
+{% block scripts %}<script>const EID = {{ eid|tojson }};</script><script src="{{ url_for('static', filename='js/experiment.js') }}"></script>{% endblock %}

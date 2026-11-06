@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}New experiment{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>New experiment</h1><p>Choose campuses, data skew, privacy level and method. The run is queued and you can watch it round by round.</p></div>
+</div>
+<div class="preset-row" id="presets"></div>
+<form id="f" autocomplete="off" onsubmit="return false">
+<div class="grid g-main">
+  <div class="grid">
+    <section class="panel"><div class="panel-h"><h2>Campuses</h2><span class="muted" id="n-sel"></span></div>
+      <div class="panel-b" id="campuses"></div></section>
+    <section class="panel"><div class="panel-h"><h2>Training schedule</h2></div><div class="panel-b">
+      <div class="row">
+        <div class="field"><label class="f" for="n_rounds">Federated rounds</label><input type="number" id="n_rounds" min="1" max="200"></div>
+        <div class="field"><label class="f" for="warmup_epochs">Warm-up epochs</label><input type="number" id="warmup_epochs" min="0" max="100"><div class="hint">Local training before round 1.</div></div>
+        <div class="field"><label class="f" for="local_epochs">Local epochs per round</label><input type="number" id="local_epochs" min="1" max="50"></div>
+        <div class="field"><label class="f" for="distill_epochs">Distillation epochs per round</label><input type="number" id="distill_epochs" min="1" max="50"></div>
+        <div class="field"><label class="f" for="batch_size">Batch size</label><input type="number" id="batch_size" min="4" max="1024"></div>
+        <div class="field"><label class="f" for="lr">Learning rate</label><input type="number" id="lr" step="0.0005" min="0.00001" max="1"></div>
+        <div class="field"><label class="f" for="anchor_per_round">Anchor samples shared per round</label><input type="number" id="anchor_per_round" min="10"></div>
+      </div></div></section>
+    <section class="panel"><div class="panel-h"><h2>Distillation and trust</h2></div><div class="panel-b">
+      <div class="row">
+        <div class="field"><label class="f" for="d-temperature">Temperature</label><input type="number" id="d-temperature" step="0.5" min="0.5" max="20"></div>
+        <div class="field"><label class="f" for="d-lambda_max">Maximum distillation weight (λ max)</label><input type="number" id="d-lambda_max" step="0.1" min="0"></div>
+        <div class="field"><label class="f" for="d-lambda_floor">Adaptive floor</label><input type="number" id="d-lambda_floor" step="0.05" min="0" max="1"><div class="hint">Share of λ max kept by the most trusted campus.</div></div>
+        <div class="field"><label class="f" for="d-lambda_fixed">Fixed λ (baselines)</label><input type="number" id="d-lambda_fixed" step="0.1" min="0"></div>
+        <div class="field"><label class="f" for="t-tau">Campus trust temperature</label><input type="number" id="t-tau" step="0.05" min="0.01"><div class="hint">Smaller reacts more sharply to uncertainty.</div></div>
+        <div class="field"><label class="f" for="t-tau_sample">Per-sample temperature</label><input type="number" id="t-tau_sample" step="0.05" min="0.01"></div>
+        <div class="field"><label class="f" for="t-ema">Trust smoothing across rounds</label><input type="number" id="t-ema" step="0.1" min="0" max="0.99"></div>
+      </div></div></section>
+  </div>
+  <div class="grid" style="align-content:start">
+    <section class="panel"><div class="panel-h"><h2>Method</h2></div><div class="panel-b">
+      <div class="field"><label class="f" for="mode">Approach</label><select id="mode"></select><div class="hint" id="mode-hint"></div></div>
+      <div class="field"><label class="f" for="name">Experiment name</label><input type="text" id="name"></div>
+    </div></section>
+    <section class="panel"><div class="panel-h"><h2>Data</h2></div><div class="panel-b">
+      <div class="field"><label class="f" for="dataset">Dataset</label><select id="dataset"></select>
+        <div class="hint">“digits” is bundled and works offline. MNIST variants download on first use.</div></div>
+      <div class="field"><label class="f" for="alpha">Non-IID level: Dirichlet α = <b id="alpha-v"></b></label>
+        <input type="range" id="alpha" min="-1.3" max="2" step="0.05"><div class="hint">Low α gives each campus only a few classes. High α is close to IID.</div></div>
+      <div class="field"><label class="f" for="seed">Random seed</label><input type="number" id="seed" min="0"></div>
+    </div></section>
+    <section class="panel"><div class="panel-h"><h2>Privacy</h2></div><div class="panel-b">
+      <div class="field switch"><input type="checkbox" id="dp-enabled"><label for="dp-enabled" style="font-weight:600">Add differential-privacy noise</label></div>
+      <div id="dp-box">
+        <div class="field"><label class="f" for="dp-epsilon">ε per release</label><input type="number" id="dp-epsilon" step="0.5" min="0.05"><div class="hint">Smaller ε means more noise and stronger privacy.</div></div>
+        <div class="field"><label class="f" for="dp-delta">δ</label><input type="number" id="dp-delta" step="any" min="0"></div>
+      </div></div></section>
+    <div id="err"></div>
+    <button class="btn primary" id="go" style="width:100%;justify-content:center;padding:14px">Queue experiment</button>
+  </div>
+</div>
+</form>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/new.js') }}"></script>{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Study{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1 id="title">Loading…</h1><p id="sub"></p></div><div class="actions" id="actions"></div></div>
+<div id="state"></div>
+<section class="panel"><div class="panel-h"><h2 id="chart-h">Final accuracy</h2></div><div class="panel-b"><div class="chart tall"><canvas id="c-main"></canvas></div><p class="hint">Mean over seeds. For method comparisons the solid bar is mean campus accuracy and the pale bar is the weakest campus. Standard deviations are in the table.</p></div></section>
+<section class="panel" style="margin-top:20px"><div class="panel-h"><h2>Results</h2></div><div class="panel-b tbl-wrap" id="tbl"></div></section>
+<section class="panel" style="margin-top:20px"><div class="panel-h"><h2>Runs</h2></div><div class="panel-b tbl-wrap" id="runs"></div></section>
+{% endblock %}
+{% block scripts %}<script>const SID = {{ sid|tojson }};</script><script src="{{ url_for('static', filename='js/study.js') }}"></script>{% endblock %}
